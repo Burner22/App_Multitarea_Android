@@ -1,5 +1,8 @@
 package com.lospibescompany.tpanexoc;
 
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
@@ -13,6 +16,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -24,10 +28,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     Context context;
     private DrawerLayout drawerLayout;
 
-    public void solicitarPermisos(){
+    public void solicitarPermisosLLamadas(){
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CALL_PHONE}, 100);
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 100);
+        }
+
+    }
+    public void solicitarPermisosUbicacion(){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                && (checkSelfPermission(ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED) ||
+                (checkSelfPermission(ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)){
+            requestPermissions(new String[]{ACCESS_FINE_LOCATION,ACCESS_COARSE_LOCATION}, 1500);
         }
     }
 
@@ -35,8 +47,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        solicitarPermisos();
-
+        solicitarPermisosUbicacion();
         //Seteo la barra nueva que cree manualmente
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -51,10 +62,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        //if(savedInstanceState == null){
-        //    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new CallFragment()).commit();
-        //    navigationView.setCheckedItem(R.id.nav_call);
-        //}
     }
 
 
@@ -62,12 +69,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch(item.getItemId()){
             case R.id.nav_call:
+                solicitarPermisosLLamadas();
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new CallFragment()).commit();
                 break;
             case R.id.nav_location:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new LocationFragment()).commit();
                 break;
             case R.id.nav_my_location:
+                solicitarPermisosUbicacion();
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MiUbicacionFragment()).commit();
                 break;
             case R.id.nav_logout:

@@ -26,10 +26,9 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         loginViewModel =new ViewModelProvider.AndroidViewModelFactory(getApplication()).create(LoginActivityViewModel.class);
-
-        EditText editTextEmail = findViewById(R.id.edit_text_email);
-        EditText editTextPassword = findViewById(R.id.edit_text_password);
-        Button buttonLogin = findViewById(R.id.button_login);
+        EditText editTextEmail = binding.editTextEmail;
+        EditText editTextPassword = binding.editTextPassword;
+        Button buttonLogin = binding.buttonLogin;
 
         loginViewModel.getCorrecto().observe(this, new Observer<Boolean>() {
             @Override
