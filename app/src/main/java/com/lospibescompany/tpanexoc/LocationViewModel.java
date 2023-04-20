@@ -1,7 +1,13 @@
 package com.lospibescompany.tpanexoc;
 
+import android.app.Application;
+import android.content.Context;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -13,24 +19,30 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class LocationViewModel extends ViewModel {
-    private Fragment mFragment;
+import java.io.Closeable;
+
+public class LocationViewModel extends AndroidViewModel {
+    private Context context;
+    private MutableLiveData<MapaActual> mapa;
     private static final LatLng walmart = new LatLng(-33.296339019478296,-66.30341321971963);
     private static final LatLng carrefour = new LatLng(-33.302695583984196,-66.33677539530545);
-    private GoogleMap map;
 
-    //Aca creo un constructor que recibe un fragment, para que en Location fragment pueda
-    //pasarselo por parametro al SupportMapFragment
-    public LocationViewModel(Fragment fragment) {
-        mFragment = fragment;
+    public LocationViewModel(@NonNull Application application) {
+        super(application);
+        this.context=application.getApplicationContext();
     }
 
-    public void mostrarMapa() {
-        SupportMapFragment mapFragment = (SupportMapFragment) mFragment.getChildFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(new MapaActual());
+    public LiveData<MapaActual> getMapa(){
+        if(mapa==null){
+            mapa=new MutableLiveData<>();
+        }
+        return mapa;
+    }
+    public void construirMapa(){
+        mapa.setValue(new MapaActual());
     }
 
-    private class MapaActual implements OnMapReadyCallback {
+    public static class MapaActual implements OnMapReadyCallback {
         @Override
         public void onMapReady(@NonNull GoogleMap googleMap) {
             googleMap.addMarker(new MarkerOptions().position(walmart).title("WalMart"));
@@ -42,13 +54,7 @@ public class LocationViewModel extends ViewModel {
                     .tilt(70)
                     .build();
             CameraUpdate camUpd = CameraUpdateFactory.newCameraPosition(camPos);
-
             googleMap.animateCamera(camUpd);
-
         }
     }
-
-
-
-
 }

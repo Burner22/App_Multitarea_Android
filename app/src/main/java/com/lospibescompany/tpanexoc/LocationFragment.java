@@ -13,21 +13,33 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.gms.maps.SupportMapFragment;
+import com.lospibescompany.tpanexoc.databinding.FragmentLocationBinding;
+
 
 public class LocationFragment extends Fragment {
-
-    private LocationViewModel mViewModel;
-
-    public static LocationFragment newInstance() {
-        return new LocationFragment();
-    }
+    FragmentLocationBinding binding;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_location, container, false);
-        mViewModel = new LocationViewModel(this);
-        mViewModel.mostrarMapa();
+        binding = FragmentLocationBinding.inflate(inflater, container, false);
+        View view = binding.getRoot();
+
+        //Se utiliza ViewModelProvider SI O SI
+        LocationViewModel homeViewModel = new ViewModelProvider(requireActivity()).get(LocationViewModel.class);
+
+        //Aca el observer que me permite utilizar en el fragment SupportMapFragment
+        homeViewModel.getMapa().observe(getViewLifecycleOwner(), mapaActual -> {
+            SupportMapFragment smf = (SupportMapFragment)getChildFragmentManager().findFragmentById(R.id.map);
+            smf.getMapAsync(mapaActual);
+        });
+        homeViewModel.construirMapa();
         return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 
 

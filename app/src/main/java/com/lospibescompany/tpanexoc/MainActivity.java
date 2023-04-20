@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void solicitarPermisos(){
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CALL_PHONE}, 100);
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 100);
         }
     }
 
@@ -65,6 +66,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_location:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new LocationFragment()).commit();
+                break;
+            case R.id.nav_my_location:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MiUbicacionFragment()).commit();
                 break;
             case R.id.nav_logout:
                 //Toast.makeText(this, "Logout!", Toast.LENGTH_LONG).show();

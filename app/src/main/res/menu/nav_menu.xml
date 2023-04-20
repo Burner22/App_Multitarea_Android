@@ -14,6 +14,10 @@
             android:id="@+id/nav_location"
             android:icon="@drawable/nav_location"
             android:title="Mercados"/>
+        <item
+            android:id="@+id/nav_my_location"
+            android:icon="@drawable/nav_location"
+            android:title="Mi ubicacion actual"/>
 
 
     </group>
