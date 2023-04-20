@@ -79,6 +79,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 solicitarPermisosUbicacion();
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MiUbicacionFragment()).commit();
                 break;
+            case R.id.nav_reproductor:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ReproductorFragment()).commit();
+                break;
             case R.id.nav_logout:
                 //Toast.makeText(this, "Logout!", Toast.LENGTH_LONG).show();
                 new AlertDialog.Builder(this)
